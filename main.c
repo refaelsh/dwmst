@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <X11/Xlib.h>
-#include <sys/utsname.h>
-#include <sys/sysinfo.h>
 
 #define MAXSTR  1024
 
