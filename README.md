@@ -1,5 +1,5 @@
 # dwmst
-Status thingy for the DWM window manager
+Status thingy for the DWM window manager.
 # Purpose 
 The purpose of this repo is for my own personal use. I will off course be very glad for any pull requests.
 # State of project
