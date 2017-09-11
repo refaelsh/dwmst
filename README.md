@@ -6,4 +6,5 @@ The purpose of this repo is for my own personal use. I will off course be very g
 Currently, it works. Its a mess, its a constant work in progress, but `master` always contains a code that works.
 # Contributions
 I am always glad when there is a pull request. I dare you :-)
-
+# Technical details
+Many parts of the code are taken from [here](https://github.com/drkhsh/slstatus).
