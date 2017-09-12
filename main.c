@@ -5,26 +5,34 @@
 
 #define MAXSTR  1024
 
-static void XSetRoot(const char *name) {
-	Display *display;
-
-	if ((display = XOpenDisplay(0x0)) == NULL) {
-		fprintf(stderr, "[barM] cannot open display!\n");
+static void XSetRoot(const char *  name)
+{
+	Display *  display ;
+	display = XOpenDisplay(0x0) ;
+	if (display == NULL)
+	{
+		//This should not happen, but, you know...
+		fprintf(stderr, "Cannot open display!\n");
 		exit(1);
 	}
 
-	XStoreName(display, DefaultRootWindow(display), name);
-	XSync(display, 0);
+	XStoreName(display, DefaultRootWindow(display), name) ;
+	XSync(display, 0) ;
 
-	XCloseDisplay(display);
+	XCloseDisplay(display) ;
 }
 
-int main(void) {
-	char status[MAXSTR];
+int main(void)
+{
+	char  status[MAXSTR] ;
 
-	long double a[4], b[4], loadavg;
-	FILE *fp;
-	char dump[50];
+	long double  a[4]    ;
+	long double  b[4]    ;
+	long double  loadavg ;
+
+	FILE *  fp ;
+
+	char  dump[50] ;
 
 	for (;;) {
 		fp = fopen("/proc/stat", "r");
