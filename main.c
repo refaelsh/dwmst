@@ -9,6 +9,7 @@ static void XSetRoot(const char *  name)
 {
 	Display *  display ;
 	display = XOpenDisplay(0x0) ;
+
 	if (display == NULL)
 	{
 		//This should not happen, but, you know...
