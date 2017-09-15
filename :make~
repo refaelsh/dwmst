@@ -1,0 +1,10 @@
+" Press ? for help
+
+.. (up a dir)
+/home/refaelsh/repos/dwmst/
+  dwmst*
+  LICENSE
+  main.c
+  main.o
+  makefile
+  README.md

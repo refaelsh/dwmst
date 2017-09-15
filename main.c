@@ -23,35 +23,36 @@ static void XSetRoot(const char *  name)
 	XCloseDisplay(display) ;
 }
 
-int main(void)
+static void GetCPUUsage(long double *  result)
 {
-	char  status[MAXSTR] ;
-
-	long double  a[4]    ;
-	long double  b[4]    ;
-	long double  loadavg ;
+	long double  a[4] ;
+	long double  b[4] ;
 
 	FILE *  fp ;
 
-	char  dump[50] ;
+	fp = fopen("/proc/stat", "r");
+	fscanf(fp, "%*s %Lf %Lf %Lf %Lf", &a[0], &a[1], &a[2], &a[3]);
+	fclose(fp);
+	sleep(1);
+
+	fp = fopen("/proc/stat", "r");
+	fscanf(fp, "%*s %Lf %Lf %Lf %Lf", &b[0], &b[1], &b[2], &b[3]);
+	fclose(fp);
+
+	*result = ((b[0] + b[1] + b[2]) - (a[0] + a[1] + a[2]))
+				/ ((b[0] + b[1] + b[2] + b[3]) - (a[0] + a[1] + a[2] + a[3])) ;
+}
+
+int main(void)
+{
+	char           status[MAXSTR] ;
+	long double *  cpuUsage       ;
 
 	for (;;)
 	{
-		fp = fopen("/proc/stat", "r");
-		fscanf(fp, "%*s %Lf %Lf %Lf %Lf", &a[0], &a[1], &a[2], &a[3]);
-		fclose(fp);
-		sleep(1);
-
-		fp = fopen("/proc/stat", "r");
-		fscanf(fp, "%*s %Lf %Lf %Lf %Lf", &b[0], &b[1], &b[2], &b[3]);
-		fclose(fp);
-
-		loadavg = ((b[0] + b[1] + b[2]) - (a[0] + a[1] + a[2]))
-				/ ((b[0] + b[1] + b[2] + b[3]) - (a[0] + a[1] + a[2] + a[3])) ;
-
 		//printf("The current CPU utilization is : %Lf\n", loadavg);
-
-		snprintf(status, MAXSTR, "%.2Lf%%", loadavg * 100) ;
+		GetCPUUsage(cpuUsage) ;
+		snprintf(status, MAXSTR, "%.2Lf%%", (*cpuUsage * 100)) ;
 		XSetRoot(status) ;
 	}
 
