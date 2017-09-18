@@ -49,6 +49,7 @@ static void GetTime(char *  result)
 {
 	time_t       curtime  ;
     struct tm *  loc_time ;
+    char		 temp[99] ;
 
     //Initialize result to empty string.
     result[0] = '\0' ;
@@ -56,7 +57,19 @@ static void GetTime(char *  result)
     //Getting current time of system
     curtime = time (NULL) ;
 
-    strcat(result, "d");
+    // Converting current time to local time
+    loc_time = localtime (&curtime);
+
+    sprintf(temp, "%02d", loc_time->tm_hour) ;
+    strcat(result, temp);
+    strcat(result, ":");
+
+    sprintf(temp, "%02d", loc_time->tm_min) ;
+    strcat(result, temp);
+    strcat(result, ":");
+
+    sprintf(temp, "%02d", loc_time->tm_sec) ;
+    strcat(result, temp);
 }
 
 int main(void)
@@ -70,7 +83,8 @@ int main(void)
 		//printf("The current CPU utilization is : %Lf\n", loadavg);
 		GetCPUUsage(&cpuUsage) ;
 		snprintf(status, MAXSTR, "%.2Lf%%", cpuUsage * 100) ;
-		//GetTime(time) ;
+		GetTime(time) ;
+		strcat(status, "|") ;
 		strcat(status, time) ;
 		XSetRoot(status) ;
 	}
