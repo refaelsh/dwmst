@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include <X11/Xlib.h>
 #include <unistd.h>
 
@@ -45,14 +47,17 @@ static void GetCPUUsage(long double *  result)
 
 int main(void)
 {
-	char           status[MAXSTR] ;
-	long double *  cpuUsage       ;
+	char         status[MAXSTR] ;
+	char         time  [MAXSTR] ;
+	long double  cpuUsage = 0   ;
 
 	for (;;)
 	{
 		//printf("The current CPU utilization is : %Lf\n", loadavg);
-		GetCPUUsage(cpuUsage) ;
-		snprintf(status, MAXSTR, "%.2Lf%%", (*cpuUsage * 100)) ;
+		GetCPUUsage(&cpuUsage) ;
+		snprintf(status, MAXSTR, "%.2Lf%%", cpuUsage * 100) ;
+		//GetTime(time) ;
+		strcat(status, time) ;
 		XSetRoot(status) ;
 	}
 
