@@ -61,15 +61,26 @@ static void GetTime(char *  result)
 
 int main(void)
 {
+<<<<<<< Updated upstream
 	char         status[MAXSTR] ;
 	char         time  [MAXSTR] ;
 	long double  cpuUsage = 0   ;
+=======
+	char           status[MAXSTR] ;
+	char           time  [MAXSTR] ;
+	long double *  cpuUsage       ;
+>>>>>>> Stashed changes
 
 	for (;;)
 	{
 		//printf("The current CPU utilization is : %Lf\n", loadavg);
+<<<<<<< Updated upstream
 		GetCPUUsage(&cpuUsage) ;
 		snprintf(status, MAXSTR, "%.2Lf%%", cpuUsage * 100) ;
+=======
+		GetCPUUsage(cpuUsage) ;
+		snprintf(status, MAXSTR, "%.2Lf%%", (*cpuUsage * 100)) ;
+>>>>>>> Stashed changes
 		//GetTime(time) ;
 		strcat(status, time) ;
 		XSetRoot(status) ;
