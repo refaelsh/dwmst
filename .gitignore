@@ -9,3 +9,7 @@ README.md~
 dwmst
 main.o
 makefile~
+:make
+:make~
+*.orig
+main.c~
