@@ -6,7 +6,8 @@
 #include <alsa/asoundlib.h>
 #include <unistd.h>
 
-#define MAXSTR  1024
+#define  MAXSTR     1024
+#define  MAXVOLUME  65535
 
 static void XSetRoot(const char *  name)
 {
@@ -75,83 +76,58 @@ static void GetTime(char *  result)
 
 static void GetVolume(int *  result)
 {
-//	long min, max;
-//    snd_mixer_t *handle;
-//    snd_mixer_selem_id_t *sid;
-//    const char *card = "default";
-//    const char *selem_name = "Master";
-//
-//    snd_mixer_open(&handle, 0);
-//    snd_mixer_attach(handle, card);
-//    snd_mixer_selem_register(handle, NULL, NULL);
-//    snd_mixer_load(handle);
-//
-//    snd_mixer_selem_id_alloca(&sid);
-//    snd_mixer_selem_id_set_index(sid, 0);
-//    snd_mixer_selem_id_set_name(sid, selem_name);
-//    snd_mixer_elem_t* elem = snd_mixer_find_selem(handle, sid);
-//
-//    snd_mixer_handle_events(handle);
-//
-//    long bla = -3 ;
-//    int res = snd_mixer_selem_get_playback_volume(elem, SND_MIXER_SCHN_FRONT_LEFT, &bla) ;
-//
-//    int a = 0 ;
-//    a++ ;
-	snd_mixer_t *handle;
-    snd_mixer_selem_id_t *sid;
+	snd_mixer_t *           handle ;
+    snd_mixer_selem_id_t *  sid    ;
 
-    const char *card = "default";
-    const char *selem_name = "Master"; // relevant control
-    int x;
-    long i, currentVolume, currentVdB;
+    const char *  card       = "default" ;
+    const char *  selem_name = "Master"  ; //Relevant control.
+    int   x             ;
+    long  i             ;
+    long  currentVolume ;
+    long  currentVdB    ;
 
-    // Set up ALSA access
-    snd_mixer_open(&handle, 0);
-    snd_mixer_attach(handle, card);
-    snd_mixer_selem_register(handle, NULL, NULL);
-    snd_mixer_load(handle);
+    //Set up ALSA access.
+    snd_mixer_open(&handle, 0) ;
+    snd_mixer_attach(handle, card) ;
+    snd_mixer_selem_register(handle, NULL, NULL) ;
+    snd_mixer_load(handle) ;
 
-    snd_mixer_selem_id_alloca(&sid);
-    snd_mixer_selem_id_set_index(sid, 0);
-    snd_mixer_selem_id_set_name(sid, selem_name);
-    snd_mixer_elem_t* elem = snd_mixer_find_selem(handle, sid);
+    //I don't know what those do...
+    snd_mixer_selem_id_alloca(&sid) ;
+    snd_mixer_selem_id_set_index(sid, 0) ;
+    snd_mixer_selem_id_set_name(sid, selem_name) ;
+    snd_mixer_elem_t* elem = snd_mixer_find_selem(handle, sid) ;
 
-    //i=0;
-    //while (1)    // loop forever
-    //{
-         ++i;
+    //Get the volume.
+    snd_mixer_selem_get_playback_volume (elem, SND_MIXER_SCHN_FRONT_LEFT, &currentVolume) ;
 
-         if (x = snd_mixer_selem_get_playback_volume (elem, SND_MIXER_SCHN_FRONT_LEFT, &currentVolume))
-         {
-              printf("%d %s\n", x, snd_strerror(x));
-         }
-         //if (x = snd_mixer_selem_get_playback_dB (elem, SND_MIXER_SCHN_FRONT_LEFT, &currentVdB))
-         //{
-          //    printf("%d %s\n", x, snd_strerror(x));
-         //}
-
-         printf("loop %ld :   vol: %ld / dB: %ld\n", i,currentVolume,currentVdB);
-
-    //}
+    *result = (double)currentVolume / (double)MAXVOLUME * 100 ;
 }
 
 int main(void)
 {
-	char         status[MAXSTR] ;
-	char         time  [MAXSTR] ;
-	long double  cpuUsage = 0   ;
+	char         status[MAXSTR]        ;
+	char         time  [MAXSTR]        ;
+	long double  cpuUsage = 0          ;
+	int          temp = 0              ;
+	char         currentVolume[MAXSTR] ;
+	char         tempString[MAXSTR]    ;
 
-	GetVolume(0) ;
+	GetVolume(&temp) ;
+	snprintf(currentVolume, MAXSTR, "%d", temp) ;
 
 	for (;;)
 	{
-		//printf("The current CPU utilization is : %Lf\n", loadavg);
 		GetCPUUsage(&cpuUsage) ;
-		snprintf(status, MAXSTR, "%.2Lf%%", cpuUsage * 100) ;
 		GetTime(time) ;
+
+		snprintf(status, MAXSTR, currentVolume) ;
+		strcat(status, "|") ;
+		snprintf(tempString, MAXSTR, "%.2Lf%%", cpuUsage * 100) ;
+		strcat(status, tempString) ;
 		strcat(status, "|") ;
 		strcat(status, time) ;
+
 		XSetRoot(status) ;
 	}
 
